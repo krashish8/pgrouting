@@ -97,10 +97,10 @@ jobs:
 
           tar -zcvf doc-v${PGVER}-es.tar.gz doc-v${PGVER}-es
 
-      - name: Release
-        run: |
           BODY=$(grep -Pzo "(?s)pgRouting ${ABCD//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n')
           BODY="${BODY}\n\n\nABCD\n\n**ABCD**"
+
+      - name: Release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
