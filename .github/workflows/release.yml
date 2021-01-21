@@ -69,13 +69,15 @@ jobs:
           export PATH=/usr/lib/postgresql/${PGVER}/bin:$PATH
           mkdir build
           cd build
-          cmake -DPOSTGRESQL_VERSION=${PGVER} -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=ON .. -DES=ON ..
+          cmake -DPOSTGRESQL_VERSION=${PGVER} -DDOC_USE_BOOTSTRAP=ON -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=ON -DBUILD_DOXY=ON  -DBUILD_LATEX=ON .. -DES=ON ..
 
       - name: Build
         run: |
           cd build
+          make doc
           make -j 4
           sudo make install
+          make doxy
 
       # - name: Test
       #   run: |
@@ -87,6 +89,8 @@ jobs:
         run: |
           wget -c https://github.com/${{ github.repository }}/archive/${TAG_NAME}.zip
           wget -c https://github.com/${{ github.repository }}/archive/${TAG_NAME}.tar.gz
+          mv ${TAG_NAME}.zip ${{ github.event.repository.name }}-${PGROUTING_VERSION}.zip
+          mv ${TAG_NAME}.gz ${{ github.event.repository.name }}-${PGROUTING_VERSION}.tar.gz
 
       - name: Make Attachments
         run: |
