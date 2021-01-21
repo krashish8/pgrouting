@@ -80,10 +80,11 @@ jobs:
           sudo make install
           make doxy
 
-      - name: Checkout gh-pages
+      - name: Clone the repo with gh-pages
         uses: actions/checkout@v2
         with:
-          ref: gh-pages
+          repository: ${{ github.repository }}
+          path: ${{ github.event.repository.name }}
 
       - name: Initialize mandatory git config
         run: |
@@ -92,9 +93,10 @@ jobs:
 
       - name: Update Users Documentation
         run: |
+          cd ${{ github.event.repository.name }}
           PGROUTING_MAJOR_MINOR="${PGROUTING_VERSION%.*}"
           rm -Rf ${PGROUTING_MAJOR_MINOR}
-          cp -r build/doc/html ${PGROUTING_MAJOR_MINOR}
+          cp -r ../build/doc/html ${PGROUTING_MAJOR_MINOR}
           git add ${PGROUTING_MAJOR_MINOR}
           git commit -m "Update users documentation for ${PGROUTING_VERSION}"
           git push origin gh-pages
