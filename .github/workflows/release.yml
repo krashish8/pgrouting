@@ -30,11 +30,13 @@ jobs:
           if [ "${{ matrix.psql }}" == "${pgver}" ]; then PGP=5432; fi
           echo "PGPORT=${PGP}" >> $GITHUB_ENV
 
+          PGROUTING_VERSION=$(grep -Po '(?<=project\(PGROUTING VERSION )[^;]+' CMakeLists.txt)
+
       - name: Verify Tag Name
         run: |
           echo "TAG_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          if [ "${TAG_NAME}" != "${PGVER}" ]; then
-            echo "Tag name should be v${PGVER}"
+          if [ "${TAG_NAME}" != "${PGROUTING_VERSION}" ]; then
+            echo "Tag name should be v${PGROUTING_VERSION}"
             exit 1
           fi
 
@@ -85,17 +87,17 @@ jobs:
         run: |
           cd build/doc
 
-          cp html doc-v${PGVER}-en-es
-          tar -zcvf doc-v${PGVER}-en-es.tar.gz doc-v${PGVER}-en-es
+          cp html doc-v${PGROUTING_VERSION}-en-es
+          tar -zcvf doc-v${PGROUTING_VERSION}-en-es.tar.gz doc-v${PGROUTING_VERSION}-en-es
 
-          cp html doc-v${PGVER}-en
-          rm -rf doc-v${PGVER}-en/es
-          tar -zcvf doc-v${PGVER}-en.tar.gz doc-v${PGVER}-en
+          cp html doc-v${PGROUTING_VERSION}-en
+          rm -rf doc-v${PGROUTING_VERSION}-en/es
+          tar -zcvf doc-v${PGROUTING_VERSION}-en.tar.gz doc-v${PGROUTING_VERSION}-en
 
-          cp html doc-v${PGVER}-es
-          rm -rf doc-v${PGVER}-es/en
+          cp html doc-v${PGROUTING_VERSION}-es
+          rm -rf doc-v${PGROUTING_VERSION}-es/en
 
-          tar -zcvf doc-v${PGVER}-es.tar.gz doc-v${PGVER}-es
+          tar -zcvf doc-v${PGROUTING_VERSION}-es.tar.gz doc-v${PGROUTING_VERSION}-es
 
           BODY=$(grep -Pzo "(?s)pgRouting ${ABCD//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n')
           BODY="${BODY}\n\n\nABCD\n\n**ABCD**"
@@ -105,9 +107,9 @@ jobs:
         with:
           draft: true
           files: |
-            build/doc/doc-v${PGVER}-en-es.tar.gz
-            build/doc/doc-v${PGVER}-en.tar.gz
-            build/doc/doc-v${PGVER}-es.tar.gz
+            build/doc/doc-v${PGROUTING_VERSION}-en-es.tar.gz
+            build/doc/doc-v${PGROUTING_VERSION}-en.tar.gz
+            build/doc/doc-v${PGROUTING_VERSION}-es.tar.gz
             ${{ github.event.repository.name }}-${TAG_NAME}.zip
             ${{ github.event.repository.name }}-${TAG_NAME}.tar.gz
           name: ${TAG_NAME}
