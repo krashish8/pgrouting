@@ -77,13 +77,8 @@ jobs:
           make doc
           make -j 4
           sudo make install
-          cd ..
-
-      # - name: Test
-      #   run: |
-      #     sudo service postgresql start
-      #     sudo -u postgres createdb -p ${PGPORT}  ___pgr___test___
-      #     sudo -u postgres bash ./tools/testers/pg_prove_tests.sh postgres ${PGPORT}  Release
+          make doxy
+          make latexpdf
 
       - name: Download Assets
         run: |
@@ -120,7 +115,7 @@ jobs:
           echo "| \`pgrouting-${PGROUTING_VERSION}.zip\`| zip of the release" >> release_body.txt
           cat release_body.txt
 
-      - name: Release
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           body_path: release_body.txt
@@ -133,7 +128,6 @@ jobs:
             build/doc/doc-v${{ env.PGROUTING_VERSION }}-es.tar.gz
             ${{ github.event.repository.name }}-${{ env.PGROUTING_VERSION }}.zip
             ${{ github.event.repository.name }}-${{ env.PGROUTING_VERSION }}.tar.gz
-            release_body.txt
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
