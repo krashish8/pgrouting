@@ -28,7 +28,7 @@ jobs:
           ref: gh-pages
 
       - name: Checkout gh-pages2
-      - run: |
+        run: |
           ls -al
           git checkout gh-pages
           ls -al
@@ -39,7 +39,7 @@ jobs:
           ref: develop
 
       - name: Checkout develop2
-      - run: |
+        run: |
           ls -al
           git checkout develop
           ls -al
