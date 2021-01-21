@@ -1,0 +1,116 @@
+name: Build for Ubuntu
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+
+jobs:
+  release:
+    name: Release
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+        fail-fast: false
+        matrix:
+          psql: [9.5,9.6,10,11,12, 13]
+          postgis: [2.5,3]
+          os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: get postgres version
+        run: |
+          sudo service postgresql start
+          pgver=$(psql --version | grep -Po '(?<=psql \(PostgreSQL\) )[^;]+(?=\.\d \()')
+          echo "PGVER=${pgver}" >> $GITHUB_ENV
+          PGP=5433
+          if [ "${{ matrix.psql }}" == "${pgver}" ]; then PGP=5432; fi
+          echo "PGPORT=${PGP}" >> $GITHUB_ENV
+
+      - name: Verify Tag Name
+        run: |
+          echo "TAG_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          if [ "${TAG_NAME}" != "${PGVER}" ]; then
+            echo "Tag name should be v${PGVER}"
+            exit 1
+          fi
+
+      - name: Add PostgreSQL APT repository
+        run: |
+          sudo apt-get install curl ca-certificates gnupg
+          curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ \
+            $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libboost-graph-dev \
+            libtap-parser-sourcehandler-pgtap-perl \
+            postgresql-${{ matrix.psql }} \
+            postgresql-${{ matrix.psql }}-pgtap \
+            postgresql-${{ matrix.psql }}-postgis-${{ matrix.postgis }} \
+            postgresql-${{ matrix.psql }}-postgis-${{ matrix.postgis }}-scripts \
+            postgresql-server-dev-${{ matrix.psql }}
+
+      - name: Configure
+        run: |
+          export PATH=/usr/lib/postgresql/${{ matrix.psql }}/bin:$PATH
+          mkdir build
+          cd build
+          cmake -DPOSTGRESQL_VERSION=${{ matrix.psql }} -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
+
+      - name: Build
+        run: |
+          cd build
+          make -j 4
+          sudo make install
+
+      # - name: Test
+      #   run: |
+      #     sudo service postgresql start
+      #     sudo -u postgres createdb -p ${PGPORT}  ___pgr___test___
+      #     sudo -u postgres bash ./tools/testers/pg_prove_tests.sh postgres ${PGPORT}  Release
+
+      - name: Download Assets
+        run: |
+          wget -c https://github.com/${{ github.repository }}/archive/${TAG_NAME}.zip
+          wget -c https://github.com/${{ github.repository }}/archive/${TAG_NAME}.tar.gz
+
+      - name: Make Attachments
+        run: |
+          cd build/doc
+
+          cp html doc-v${PGVER}-en-es
+          tar -zcvf doc-v${PGVER}-en-es.tar.gz doc-v${PGVER}-en-es
+
+          cp html doc-v${PGVER}-en
+          rm -rf doc-v${PGVER}-en/es
+          tar -zcvf doc-v${PGVER}-en.tar.gz doc-v${PGVER}-en
+
+          cp html doc-v${PGVER}-es
+          rm -rf doc-v${PGVER}-es/en
+
+          tar -zcvf doc-v${PGVER}-es.tar.gz doc-v${PGVER}-es
+
+      - name: Release
+        run: |
+          BODY=$(grep -Pzo "(?s)pgRouting ${ABCD//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n')
+          BODY="${BODY}\n\n\nABCD\n\n**ABCD**"
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            build/doc/doc-v${PGVER}-en-es.tar.gz
+            build/doc/doc-v${PGVER}-en.tar.gz
+            build/doc/doc-v${PGVER}-es.tar.gz
+            ${{ github.event.repository.name }}-${TAG_NAME}.zip
+            ${{ github.event.repository.name }}-${TAG_NAME}.tar.gz
+          name: ${TAG_NAME}
+          body: ${BODY}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
