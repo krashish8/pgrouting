@@ -9,14 +9,10 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
         fail-fast: false
-        matrix:
-          psql: [9.5,9.6,10,11,12, 13]
-          postgis: [2.5,3]
-          os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -25,11 +21,9 @@ jobs:
         run: |
           sudo service postgresql start
           pgver=$(psql --version | grep -Po '(?<=psql \(PostgreSQL\) )[^;]+(?=\.\d \()')
-          echo "PGVER=${pgver}" >> $GITHUB_ENV
-          PGP=5433
-          if [ "${{ matrix.psql }}" == "${pgver}" ]; then PGP=5432; fi
-          echo "PGPORT=${PGP}" >> $GITHUB_ENV
-
+          echo "PGVER=${PGVER}" >> $GITHUB_ENV
+          echo "PGPORT=5432" >> $GITHUB_ENV
+          echo "PGIS=3" >> $GITHUB_ENV
           PGROUTING_VERSION=$(grep -Po '(?<=project\(PGROUTING VERSION )[^;]+' CMakeLists.txt)
 
       - name: Verify Tag Name
@@ -53,18 +47,18 @@ jobs:
           sudo apt-get install -y \
             libboost-graph-dev \
             libtap-parser-sourcehandler-pgtap-perl \
-            postgresql-${{ matrix.psql }} \
-            postgresql-${{ matrix.psql }}-pgtap \
-            postgresql-${{ matrix.psql }}-postgis-${{ matrix.postgis }} \
-            postgresql-${{ matrix.psql }}-postgis-${{ matrix.postgis }}-scripts \
-            postgresql-server-dev-${{ matrix.psql }}
+            postgresql-${PGVER} \
+            postgresql-${PGVER}-pgtap \
+            postgresql-${PGVER}-postgis-${PGIS} \
+            postgresql-${PGVER}-postgis-${PGIS}-scripts \
+            postgresql-server-dev-${PGVER}
 
       - name: Configure
         run: |
-          export PATH=/usr/lib/postgresql/${{ matrix.psql }}/bin:$PATH
+          export PATH=/usr/lib/postgresql/${PGVER}/bin:$PATH
           mkdir build
           cd build
-          cmake -DPOSTGRESQL_VERSION=${{ matrix.psql }} -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
+          cmake -DPOSTGRESQL_VERSION=${PGVER} -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=ON ..
 
       - name: Build
         run: |
