@@ -60,9 +60,7 @@ jobs:
             postgresql-${PGVER}-postgis-${PGIS}-scripts \
             postgresql-server-dev-${PGVER} \
             graphviz \
-            doxygen \
-            latexmk
-          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
+            doxygen
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip list
@@ -72,7 +70,7 @@ jobs:
           export PATH=/usr/lib/postgresql/${PGVER}/bin:$PATH
           mkdir build
           cd build
-          cmake -DPOSTGRESQL_VERSION=${PGVER} -DDOC_USE_BOOTSTRAP=ON -DWITH_DOC=ON -DBUILD_DOXY=ON  -DBUILD_LATEX=ON -DCMAKE_BUILD_TYPE=Release -DES=ON ..
+          cmake -DPOSTGRESQL_VERSION=${PGVER} -DDOC_USE_BOOTSTRAP=ON -DWITH_DOC=ON -DBUILD_DOXY=ON -DCMAKE_BUILD_TYPE=Release -DES=ON ..
 
       - name: Build
         run: |
@@ -81,8 +79,25 @@ jobs:
           make -j 4
           sudo make install
           make doxy
-          cd doc/latex/en
-          make
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+
+      - name: Update Users Documentation
+        run: |
+          PGROUTING_MAJOR_MINOR="${PGROUTING_VERSION%.*}"
+          rm -Rf ${PGROUTING_MAJOR_MINOR}
+          cp -r build/doc/html ${PGROUTING_MAJOR_MINOR}
+          git add ${PGROUTING_MAJOR_MINOR}
+          git commit -m "Update users documentation for ${PGROUTING_VERSION}"
+          git push origin gh-pages
 
       - name: Download Assets
         run: |
