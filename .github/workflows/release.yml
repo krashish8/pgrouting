@@ -91,6 +91,7 @@ jobs:
           cd ${{ github.event.repository.name }}
           git config user.name "GitHub Actions"
           git config user.email noreply@github.com
+          git checkout -b gh-pages
           PGROUTING_MAJOR_MINOR="${PGROUTING_VERSION%.*}"
           rm -Rf ${PGROUTING_MAJOR_MINOR}
           cp -r ../build/doc/html ${PGROUTING_MAJOR_MINOR}
