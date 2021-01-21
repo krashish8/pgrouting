@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - 'translations_*'
+
+
+jobs:
+  release:
+    name: Test
+    runs-on: ubuntu-latest
+
+    strategy:
+        fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Git status
+        run: |
+          git status
+          git log --oneline
+
+      - name: Clone the repo with gh-pages
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository }}
+          path: ${{ github.event.repository.name }}
+
+      - name: Update Users Documentation
+        run: |
+          cd ${{ github.event.repository.name }}
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+          git checkout -b gh-pages
+          git status
+          git log --oneline
+          touch tempfile
+          git add tempfile
+          git commit -m "Adding tempfile"
+          git push origin gh-pages
