@@ -15,30 +15,30 @@ jobs:
         fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+            fetch-depth: 0
 
       - name: Git status
         run: |
           git status
-          git log --oneline
-
-      - name: Clone the repo with gh-pages
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ github.repository }}
-          path: ${{ github.event.repository.name }}
-          fetch-depth: 0
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+          touch abcd
+          git add abcd
+          git commit -m "Adding abcd"
+          git push origin add-actions-script
+          touch another-file
+          ls
 
       - name: Update Users Documentation
         run: |
-          cd ${{ github.event.repository.name }}
-          git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
+          git checkout origin/gh-pages
           git checkout -b gh-pages
           git status
-          git branch -a
-          git log --oneline
           touch tempfile
           git add tempfile
           git commit -m "Adding tempfile"
           git push origin gh-pages
+          ls
