@@ -93,11 +93,23 @@ jobs:
           git checkout origin/gh-pages
           git checkout -b gh-pages
           PGROUTING_MAJOR_MINOR="${PGROUTING_VERSION%.*}"
-          rm -Rf ${PGROUTING_MAJOR_MINOR}
+          rm -rf ${PGROUTING_MAJOR_MINOR}
           cp -r build/doc/html ${PGROUTING_MAJOR_MINOR}
           git add ${PGROUTING_MAJOR_MINOR}
           git commit -m "Update users documentation for ${PGROUTING_VERSION}"
           git push origin gh-pages
+          git checkout @{-2}
+
+      - name: Update Developers Documentation
+        if: github.ref == 'refs/heads/master'
+        run: |
+          git checkout origin/gh-pages
+          git checkout -b gh-pages
+          rm -rf doxygen
+          cp -r build/doxygen/html doxygen
+          git add doxygen
+          git commit -m "Update developers documentation for ${PGROUTING_VERSION}"
+          git push origin master
           git checkout @{-2}
 
       - name: Download Assets
