@@ -69,7 +69,7 @@ jobs:
           export PATH=/usr/lib/postgresql/${PGVER}/bin:$PATH
           mkdir build
           cd build
-          cmake -DPOSTGRESQL_VERSION=${PGVER} -DDOC_USE_BOOTSTRAP=ON -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=ON -DBUILD_DOXY=ON  -DBUILD_LATEX=ON -DES=ON ..
+          cmake -DPOSTGRESQL_VERSION=${PGVER} -DDOC_USE_BOOTSTRAP=ON -DWITH_DOC=ON -DBUILD_DOXY=ON  -DBUILD_LATEX=ON -DCMAKE_BUILD_TYPE=Release -DES=ON ..
 
       - name: Build
         run: |
@@ -109,18 +109,29 @@ jobs:
           tar -zcvf doc-v${PGROUTING_VERSION}-es.tar.gz doc-v${PGROUTING_VERSION}-es
 
           cd ../..
+          grep -Pzo "(?s)pgRouting ${PGROUTING_VERSION//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n' > release_body
+          echo "**Attachments**" >> release_body
+          echo "File | Contents" >> release_body
+          echo "| --- | --- |" >> release_body
+          echo "| `doc-v${PGROUTING_VERSION}-en-es.tar.gz` | English and Spanish documentation. Redirection to English" >> release_body
+          echo "| `doc-v${PGROUTING_VERSION}-en.tar.gz`|English documentation. Redirection to English" >> release_body
+          echo "| `doc-v${PGROUTING_VERSION}-es.tar.gz`|Spanish documentation. Redirection to Spanish" >> release_body
+          echo "| `pgrouting-${PGROUTING_VERSION}.tar.gz` | tar.gz of the release" >> release_body
+          echo "| `pgrouting-${PGROUTING_VERSION}.zip`| zip of the release" >> release_body
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          body_path: release_body
+          name: ${{ env.TAG_NAME }}
           draft: true
+          prerelease: false
           files: |
             build/doc/doc-v${{ env.PGROUTING_VERSION }}-en-es.tar.gz
             build/doc/doc-v${{ env.PGROUTING_VERSION }}-en.tar.gz
             build/doc/doc-v${{ env.PGROUTING_VERSION }}-es.tar.gz
-            ${{ github.event.repository.name }}-${{ env.TAG_NAME }}.zip
-            ${{ github.event.repository.name }}-${{ env.TAG_NAME }}.tar.gz
-          name: ${{ env.TAG_NAME }}
-          body: ${{ env.BODY }}
+            ${{ github.event.repository.name }}-${{ env.PGROUTING_VERSION }}.zip
+            ${{ github.event.repository.name }}-${{ env.PGROUTING_VERSION }}.tar.gz
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
