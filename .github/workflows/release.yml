@@ -80,7 +80,7 @@ jobs:
           make -j 4
           sudo make install
           make doxy
-          cd build/doc/latex/en
+          cd doc/latex/en
           make
 
       - name: Download Assets
