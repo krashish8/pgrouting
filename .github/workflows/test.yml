@@ -27,6 +27,7 @@ jobs:
         with:
           repository: ${{ github.repository }}
           path: ${{ github.event.repository.name }}
+          fetch-depth: 0
 
       - name: Update Users Documentation
         run: |
@@ -35,6 +36,7 @@ jobs:
           git config user.email noreply@github.com
           git checkout -b gh-pages
           git status
+          git branch -a
           git log --oneline
           touch tempfile
           git add tempfile
