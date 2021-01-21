@@ -86,14 +86,11 @@ jobs:
           repository: ${{ github.repository }}
           path: ${{ github.event.repository.name }}
 
-      - name: Initialize mandatory git config
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
-
       - name: Update Users Documentation
         run: |
           cd ${{ github.event.repository.name }}
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
           PGROUTING_MAJOR_MINOR="${PGROUTING_VERSION%.*}"
           rm -Rf ${PGROUTING_MAJOR_MINOR}
           cp -r ../build/doc/html ${PGROUTING_MAJOR_MINOR}
