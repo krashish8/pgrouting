@@ -15,9 +15,12 @@ jobs:
         fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: get postgres version
+      - name: Get postgres version
         run: |
           sudo service postgresql start
           PGVER=$(psql --version | grep -Po '(?<=psql \(PostgreSQL\) )[^;]+(?=\.\d \()')
@@ -80,21 +83,18 @@ jobs:
           sudo make install
           make doxy
 
-      - name: Clone the repo with gh-pages
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ github.repository }}
-          path: ${{ github.event.repository.name }}
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Update Users Documentation
         run: |
-          cd ${{ github.event.repository.name }}
-          git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
+          git checkout origin/gh-pages
           git checkout -b gh-pages
           PGROUTING_MAJOR_MINOR="${PGROUTING_VERSION%.*}"
           rm -Rf ${PGROUTING_MAJOR_MINOR}
-          cp -r ../build/doc/html ${PGROUTING_MAJOR_MINOR}
+          cp -r build/doc/html ${PGROUTING_MAJOR_MINOR}
           git add ${PGROUTING_MAJOR_MINOR}
           git commit -m "Update users documentation for ${PGROUTING_VERSION}"
           git push origin gh-pages
