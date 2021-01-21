@@ -88,18 +88,19 @@ jobs:
         run: |
           cd build/doc
 
-          cp html doc-v${PGROUTING_VERSION}-en-es
+          cp -r html doc-v${PGROUTING_VERSION}-en-es
           tar -zcvf doc-v${PGROUTING_VERSION}-en-es.tar.gz doc-v${PGROUTING_VERSION}-en-es
 
-          cp html doc-v${PGROUTING_VERSION}-en
+          cp -r html doc-v${PGROUTING_VERSION}-en
           rm -rf doc-v${PGROUTING_VERSION}-en/es
           tar -zcvf doc-v${PGROUTING_VERSION}-en.tar.gz doc-v${PGROUTING_VERSION}-en
 
-          cp html doc-v${PGROUTING_VERSION}-es
+          cp -r html doc-v${PGROUTING_VERSION}-es
           rm -rf doc-v${PGROUTING_VERSION}-es/en
           perl -pi -e 's/en\/index.html/es\/index.html/g' doc-v${PGROUTING_VERSION}-es/index.html
           tar -zcvf doc-v${PGROUTING_VERSION}-es.tar.gz doc-v${PGROUTING_VERSION}-es
 
+          cd ../..
           BODY=$(grep -Pzo "(?s)pgRouting ${ABCD//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n')
           BODY="${BODY}\n\n\nABCD\n\n**ABCD**"
 
