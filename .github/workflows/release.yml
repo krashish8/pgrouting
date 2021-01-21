@@ -90,7 +90,7 @@ jobs:
           wget -c https://github.com/${{ github.repository }}/archive/${TAG_NAME}.zip
           wget -c https://github.com/${{ github.repository }}/archive/${TAG_NAME}.tar.gz
           mv ${TAG_NAME}.zip ${{ github.event.repository.name }}-${PGROUTING_VERSION}.zip
-          mv ${TAG_NAME}.gz ${{ github.event.repository.name }}-${PGROUTING_VERSION}.tar.gz
+          mv ${TAG_NAME}.tar.gz ${{ github.event.repository.name }}-${PGROUTING_VERSION}.tar.gz
 
       - name: Make Attachments
         run: |
