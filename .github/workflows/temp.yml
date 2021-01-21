@@ -1,4 +1,4 @@
-name: Release
+name: TEMP
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      – name: Initialize mandatory git config
+      - name: Initialize mandatory git config
         run: |
           git config user.name "GitHub Actions"
           git config user.email noreply@github.com
