@@ -8,7 +8,7 @@ on:
 
 jobs:
   release:
-    name: Release
+    name: Temp
     runs-on: ubuntu-latest
 
     strategy:
@@ -22,14 +22,20 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email noreply@github.com
 
-      - name: Update Developers Documentation
+      - name: Checkout gh-pages
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
         run: |
           ls -al
           git checkout gh-pages
           ls -al
 
-      - name: Temp
+      - name: Checkout master
+        uses: actions/checkout@v2
+          with:
+            ref: develop
         run: |
           ls -al
-          git checkout master
+          git checkout develop
           ls -al
