@@ -105,9 +105,6 @@ jobs:
           tar -zcvf doc-v${PGROUTING_VERSION}-es.tar.gz doc-v${PGROUTING_VERSION}-es
 
           cd ../..
-          BODY=$(grep -Pzo "(?s)pgRouting ${PGROUTING_VERSION//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n')
-          BODY="${BODY}\n\n\nABCD\n\n**ABCD**"
-          echo -e "BODY=${BODY}" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v1
