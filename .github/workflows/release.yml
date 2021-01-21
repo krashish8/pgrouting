@@ -98,7 +98,7 @@ jobs:
           git add ${PGROUTING_MAJOR_MINOR}
           git commit -m "Update users documentation for ${PGROUTING_VERSION}"
           git push origin gh-pages
-          git checkout -
+          git checkout @{-2}
 
       - name: Download Assets
         run: |
