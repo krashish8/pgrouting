@@ -60,7 +60,8 @@ jobs:
             postgresql-${PGVER}-postgis-${PGIS}-scripts \
             postgresql-server-dev-${PGVER} \
             graphviz \
-            doxygen
+            doxygen \
+            latexmk
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip list
@@ -79,6 +80,8 @@ jobs:
           make -j 4
           sudo make install
           make doxy
+          cd build/doc/latex/en
+          make
 
       - name: Download Assets
         run: |
