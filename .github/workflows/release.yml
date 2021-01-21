@@ -29,7 +29,8 @@ jobs:
 
       - name: Verify Tag Name
         run: |
-          echo "TAG_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          TAG_NAME=${GITHUB_REF#refs/*/}
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
           if [ "${TAG_NAME}" != "${PGROUTING_VERSION}" ]; then
             echo "Tag name should be v${PGROUTING_VERSION}"
             exit 1
