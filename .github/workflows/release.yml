@@ -113,11 +113,11 @@ jobs:
           echo "**Attachments**" >> release_body.txt
           echo "File | Contents" >> release_body.txt
           echo "| --- | --- |" >> release_body.txt
-          echo "| `doc-v${PGROUTING_VERSION}-en-es.tar.gz` | English and Spanish documentation. Redirection to English" >> release_body.txt
-          echo "| `doc-v${PGROUTING_VERSION}-en.tar.gz`|English documentation. Redirection to English" >> release_body.txt
-          echo "| `doc-v${PGROUTING_VERSION}-es.tar.gz`|Spanish documentation. Redirection to Spanish" >> release_body.txt
-          echo "| `pgrouting-${PGROUTING_VERSION}.tar.gz` | tar.gz of the release" >> release_body.txt
-          echo "| `pgrouting-${PGROUTING_VERSION}.zip`| zip of the release" >> release_body.txt
+          echo "| \`doc-v${PGROUTING_VERSION}-en-es.tar.gz\` | English and Spanish documentation. Redirection to English" >> release_body.txt
+          echo "| \`doc-v${PGROUTING_VERSION}-en.tar.gz\`|English documentation. Redirection to English" >> release_body.txt
+          echo "| \`doc-v${PGROUTING_VERSION}-es.tar.gz\`|Spanish documentation. Redirection to Spanish" >> release_body.txt
+          echo "| \`pgrouting-${PGROUTING_VERSION}.tar.gz\` | tar.gz of the release" >> release_body.txt
+          echo "| \`pgrouting-${PGROUTING_VERSION}.zip\`| zip of the release" >> release_body.txt
           cat release_body.txt
 
       - name: Release
@@ -133,6 +133,7 @@ jobs:
             build/doc/doc-v${{ env.PGROUTING_VERSION }}-es.tar.gz
             ${{ github.event.repository.name }}-${{ env.PGROUTING_VERSION }}.zip
             ${{ github.event.repository.name }}-${{ env.PGROUTING_VERSION }}.tar.gz
+            release_body.txt
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
