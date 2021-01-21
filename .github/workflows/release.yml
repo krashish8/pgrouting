@@ -31,7 +31,9 @@ jobs:
         run: |
           TAG_NAME=${GITHUB_REF#refs/*/}
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
-          if [ "${TAG_NAME}" != "${PGROUTING_VERSION}" ]; then
+          echo ${TAG_NAME}
+          echo ${PGROUTING_VERSION}
+          if [ "${TAG_NAME}" != "v${PGROUTING_VERSION}" ]; then
             echo "Tag name should be v${PGROUTING_VERSION}"
             exit 1
           fi
