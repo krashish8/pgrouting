@@ -41,24 +41,31 @@ jobs:
           sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ \
             $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             libboost-graph-dev \
-            libtap-parser-sourcehandler-pgtap-perl \
             postgresql-${PGVER} \
-            postgresql-${PGVER}-pgtap \
             postgresql-${PGVER}-postgis-${PGIS} \
             postgresql-${PGVER}-postgis-${PGIS}-scripts \
-            postgresql-server-dev-${PGVER}
+            postgresql-server-dev-${PGVER} \
+            graphviz
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip list
 
       - name: Configure
         run: |
           export PATH=/usr/lib/postgresql/${PGVER}/bin:$PATH
           mkdir build
           cd build
-          cmake -DPOSTGRESQL_VERSION=${PGVER} -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=ON ..
+          cmake -DPOSTGRESQL_VERSION=${PGVER} -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=ON .. -DES=ON ..
 
       - name: Build
         run: |
@@ -90,7 +97,7 @@ jobs:
 
           cp html doc-v${PGROUTING_VERSION}-es
           rm -rf doc-v${PGROUTING_VERSION}-es/en
-
+          perl -pi -e 's/en\/index.html/es\/index.html/g' doc-v${PGROUTING_VERSION}-es/index.html
           tar -zcvf doc-v${PGROUTING_VERSION}-es.tar.gz doc-v${PGROUTING_VERSION}-es
 
           BODY=$(grep -Pzo "(?s)pgRouting ${ABCD//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n')
