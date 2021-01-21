@@ -107,19 +107,19 @@ jobs:
           cd ../..
           BODY=$(grep -Pzo "(?s)pgRouting ${ABCD//./\\.} Release Notes.*?(?=pgRouting .\..\.. Release Notes)" NEWS | tr '\0' '\n')
           BODY="${BODY}\n\n\nABCD\n\n**ABCD**"
-          echo "BODY=${BODY}" >> $GITHUB_ENV
+          echo -e "BODY=${BODY}" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           files: |
-            build/doc/doc-v${PGROUTING_VERSION}-en-es.tar.gz
-            build/doc/doc-v${PGROUTING_VERSION}-en.tar.gz
-            build/doc/doc-v${PGROUTING_VERSION}-es.tar.gz
-            ${{ github.event.repository.name }}-${TAG_NAME}.zip
-            ${{ github.event.repository.name }}-${TAG_NAME}.tar.gz
-          name: ${TAG_NAME}
-          body: ${BODY}
+            build/doc/doc-v${{ env.PGROUTING_VERSION }}-en-es.tar.gz
+            build/doc/doc-v${{ env.PGROUTING_VERSION }}-en.tar.gz
+            build/doc/doc-v${{ env.PGROUTING_VERSION }}-es.tar.gz
+            ${{ github.event.repository.name }}-${{ env.TAG_NAME }}.zip
+            ${{ github.event.repository.name }}-${{ env.TAG_NAME }}.tar.gz
+          name: ${{ env.TAG_NAME }}
+          body: ${{ env.BODY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
