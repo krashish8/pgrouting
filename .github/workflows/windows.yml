@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: echo
         run: |
-          echo "POSTGRESQL_DIR=$pwd\pgsql\pgsql" >> $env:GITHUB_ENV
+          echo "POSTGRESQL_DIR=($pwd)\pgsql\pgsql" >> $env:GITHUB_ENV
           echo $env:POSTGRESQL_DIR
           echo ${{ matrix.pg_major }}
           echo ${{ env.POSTGRESQL_DIR }}
