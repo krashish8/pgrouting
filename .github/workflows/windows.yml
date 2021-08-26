@@ -45,7 +45,7 @@ jobs:
 
       - name: Check Postgres running
         run: |
-          ${{ env.POSTGRESQL_DIR }}\psql -U postgres -d postgres -c "SELECT version()"
+          ${{ env.POSTGRESQL_DIR }}\bin\psql -U postgres -d postgres -c "SELECT version()"
 
       - name: Configure
         run: |
