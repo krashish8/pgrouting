@@ -21,6 +21,9 @@ jobs:
       - name: echo
         run: |
           echo "POSTGRESQL_DIR=abcd" >> $env:GITHUB_ENV
+
+      - name: print echo
+        run: |
           echo $env:POSTGRESQL_DIR
           echo ${{ matrix.pg_major }}
           echo ${{ env.POSTGRESQL_DIR }}
