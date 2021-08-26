@@ -294,6 +294,9 @@ if(NOT WIN32)
     endif()
 endif()
 
+remove_definitions(ENABLE_NLS)
+remove_definitions(-DENABLE_NLS)
+
 if(WIN32 AND MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 endif()
