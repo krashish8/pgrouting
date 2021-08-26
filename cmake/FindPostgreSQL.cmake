@@ -94,10 +94,10 @@ else(POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES AND POSTGRESQL_EXECUTABLE)
         /usr/include/postgresql/*/server
         /usr/local/include/postgresql/server
         /usr/local/include/postgresql/*/server
-        $ENV{ProgramFiles}/PostgreSQL/*/include/server
         $ENV{ProgramFiles}/PostgreSQL/*/include
-        $ENV{SystemDrive}/PostgreSQL/*/include/server
         $ENV{SystemDrive}/PostgreSQL/*/include
+        $ENV{ProgramFiles}/PostgreSQL/*/include/server
+        $ENV{SystemDrive}/PostgreSQL/*/include/server
         )
 
     if(POSTGRESQL_PG_CONFIG)
