@@ -18,6 +18,11 @@ jobs:
         pg_major: [11.13, 12.8, 13.4]
 
     steps:
+      - name: echo
+        run: |
+          echo "POSTGRESQL_DIR=$pwd\pgsql\pgsql" >> $env:GITHUB_ENV
+          echo $env:POSTGRESQL_DIR
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -37,7 +42,7 @@ jobs:
         run: |
           curl https://get.enterprisedb.com/postgresql/postgresql-${{ matrix.pg_major }}-1-windows-x64-binaries.zip --output pgsql.zip
           Expand-Archive 'pgsql.zip' -Force
-          echo ("POSTGRESQL_DIR=$pwd\pgsql\pgsql") >> $env:GITHUB_ENV
+          echo "POSTGRESQL_DIR=$pwd\pgsql\pgsql" >> $env:GITHUB_ENV
           echo $env:POSTGRESQL_DIR
           $env:path += ";$env:POSTGRESQL_DIR\bin\"
           $env:path -split ";"
