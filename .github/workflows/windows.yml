@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: echo
         run: |
-          echo "POSTGRESQL_DIR=abcd" >> $env:GITHUB_ENV
+          echo "POSTGRESQL_DIR=$pwd\pgsql\pgsql" >> $env:GITHUB_ENV
 
       - name: print echo
         run: |
