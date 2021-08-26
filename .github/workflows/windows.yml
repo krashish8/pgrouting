@@ -61,7 +61,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DPOSTGRESQL_BIN=pgsql\pgsql\bin\ -DPOSTGRESQL_INCLUDE_DIR=pgsql\pgsql\include;pgsql\pgsql\include\server -G"Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
+          cmake -DPOSTGRESQL_BIN=pgsql\pgsql\bin\ -DPOSTGRESQL_INCLUDE_DIR="pgsql\pgsql\include;pgsql\pgsql\include\server" -G"Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
