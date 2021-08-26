@@ -52,6 +52,10 @@ jobs:
           ls pgsql\pgsql\bin
           ls pgsql\pgsql\include
 
+      - name: Get file content
+        run: |
+          Get-Content -Path .\pgsql\pgsql\include\server\c.h
+
       - name: Configure
         run: |
           mkdir build
