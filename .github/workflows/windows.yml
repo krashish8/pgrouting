@@ -33,6 +33,19 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.3
 
+      - name: Install PostgreSQL
+        run: |
+          curl https://get.enterprisedb.com/postgresql/postgresql-13.0-1-windows-x64-binaries.zip --output pgsql.zip
+          Expand-Archive 'pgsql.zip' -Force
+          $env:path += ";$(Get-Location)\pgsql\pgsql\bin\"
+          $env:path -split ";"
+          initdb -D pgsql\data -U postgres
+          pg_ctl -D pgsql\data start
+
+      - name: Check Postgres running
+        run: |
+          pgsql\pgsql\bin\psql -U postgres -d postgres -c "SELECT version()"
+
       - name: Configure
         run: |
           mkdir build
