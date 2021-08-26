@@ -27,6 +27,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #ifdef HAVE_STRING_H
 #  include <string.h>
 #endif
+#if defined(HAVE_STRINGS_H)
+#  include <strings.h>
+#endif
 #include "utils/builtins.h"
 
 #include "catalog/pg_type.h"
