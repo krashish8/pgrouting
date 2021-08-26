@@ -18,16 +18,6 @@ jobs:
         pg_major: [11.13, 12.8, 13.4]
 
     steps:
-      - name: echo
-        run: |
-          echo "POSTGRESQL_DIR=$pwd\pgsql\pgsql" >> $env:GITHUB_ENV
-
-      - name: print echo
-        run: |
-          echo $env:POSTGRESQL_DIR
-          echo ${{ matrix.pg_major }}
-          echo ${{ env.POSTGRESQL_DIR }}
-
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -47,12 +37,11 @@ jobs:
         run: |
           curl https://get.enterprisedb.com/postgresql/postgresql-${{ matrix.pg_major }}-1-windows-x64-binaries.zip --output pgsql.zip
           Expand-Archive 'pgsql.zip' -Force
-          echo "POSTGRESQL_DIR=$pwd\pgsql\pgsql" >> $env:GITHUB_ENV
-          echo $env:POSTGRESQL_DIR
-          $env:path += ";$env:POSTGRESQL_DIR\bin\"
+          $env:path += ";$(Get-Location)\pgsql\pgsql\bin\"
           $env:path -split ";"
           initdb -D pgsql\data -U postgres
           pg_ctl -D pgsql\data start
+          echo "POSTGRESQL_DIR=$pwd\pgsql\pgsql" >> $env:GITHUB_ENV
 
       - name: Check Postgres running
         run: |
@@ -73,7 +62,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DPOSTGRESQL_BIN=$env:POSTGRESQL_DIR\bin -DPOSTGRESQL_INCLUDE_DIR="$env:POSTGRESQL_DIR\include;$env:POSTGRESQL_DIR\include\server" -G"Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
+          cmake -DPOSTGRESQL_BIN=${{ env.POSTGRESQL_DIR }}\bin -DPOSTGRESQL_INCLUDE_DIR="${{ env.POSTGRESQL_DIR }}\include;${{ env.POSTGRESQL_DIR }}\include\server" -G"Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
