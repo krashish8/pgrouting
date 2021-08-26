@@ -51,6 +51,7 @@ jobs:
           ls pgsql\pgsql
           ls pgsql\pgsql\bin
           ls pgsql\pgsql\include
+          ls pgsql\pgsql\include\server
 
       - name: Get file content
         run: |
