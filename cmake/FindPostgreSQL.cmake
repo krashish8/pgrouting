@@ -76,7 +76,7 @@ else(POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES AND POSTGRESQL_EXECUTABLE)
 
     if(POSTGRESQL_PG_CONFIG)
         execute_process(
-            COMMAND ${POSTGRESQL_PG_CONFIG} --includedir
+            COMMAND ${POSTGRESQL_PG_CONFIG} --includedir-server
             OUTPUT_STRIP_TRAILING_WHITESPACE
             OUTPUT_VARIABLE T_POSTGRESQL_INCLUDE_DIR)
     endif(POSTGRESQL_PG_CONFIG)
@@ -94,8 +94,6 @@ else(POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES AND POSTGRESQL_EXECUTABLE)
         /usr/include/postgresql/*/server
         /usr/local/include/postgresql/server
         /usr/local/include/postgresql/*/server
-        $ENV{ProgramFiles}/PostgreSQL/*/include
-        $ENV{SystemDrive}/PostgreSQL/*/include
         $ENV{ProgramFiles}/PostgreSQL/*/include/server
         $ENV{SystemDrive}/PostgreSQL/*/include/server
         )
