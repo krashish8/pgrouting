@@ -50,7 +50,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -G"Visual Studio 16 2019" -DPOSTGRESQL_VERSION=${{ matrix.pg_mayor }} -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
+          cmake -DPOSTGRESQL_BIN=pgsql\pgsql\bin\ -G"Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DWITH_DOC=OFF ..
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
