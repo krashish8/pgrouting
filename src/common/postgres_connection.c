@@ -24,7 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 #include "c_common/postgres_connection.h"
 
-#include <string.h>
+#ifdef HAVE_STRING_H
+#  include <string.h>
+#endif
 #include "utils/builtins.h"
 
 #include "catalog/pg_type.h"
