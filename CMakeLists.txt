@@ -233,10 +233,7 @@ if(NOT LIBRARY_INSTALL_PATH)
     message(FATAL_ERROR "pg_config --pkglibdir failed to return a value. Please check your PostgreSQL installation!")
 endif()
 
-include_directories("C:/Program Files/PostgreSQL/13/include/server")
-include_directories("C:/Program Files/PostgreSQL/13/include")
 include_directories("D:/a/pgrouting/pgrouting/pgsql/pgsql/include")
-include_directories("D:/a/pgrouting/pgrouting/pgsql/pgsql/include/server")
 
 message(STATUS "LIBRARY_INSTALL_PATH ${LIBRARY_INSTALL_PATH}")
 

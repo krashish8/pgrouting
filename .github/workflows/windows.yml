@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        pg_mayor: [11,12,13]
+        pg_major: [11.13, 12.8, 13.4]
 
     steps:
       - name: Checkout repository
@@ -35,7 +35,7 @@ jobs:
 
       - name: Install PostgreSQL
         run: |
-          curl https://get.enterprisedb.com/postgresql/postgresql-13.0-1-windows-x64-binaries.zip --output pgsql.zip
+          curl https://get.enterprisedb.com/postgresql/postgresql-${{ matrix.pg_major }}-1-windows-x64-binaries.zip --output pgsql.zip
           Expand-Archive 'pgsql.zip' -Force
           $env:path += ";$(Get-Location)\pgsql\pgsql\bin\"
           $env:path -split ";"
