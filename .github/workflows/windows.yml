@@ -45,18 +45,7 @@ jobs:
 
       - name: Check Postgres running
         run: |
-          pgsql\pgsql\bin\psql -U postgres -d postgres -c "SELECT version()"
-
-      - name: List files
-        run: |
-          ls pgsql\pgsql
-          ls pgsql\pgsql\bin
-          ls pgsql\pgsql\include
-          ls pgsql\pgsql\include\server
-
-      - name: Get file content
-        run: |
-          Get-Content -Path .\pgsql\pgsql\include\server\c.h
+          ${{ env.POSTGRESQL_DIR }}\psql -U postgres -d postgres -c "SELECT version()"
 
       - name: Configure
         run: |
