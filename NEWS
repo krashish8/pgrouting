@@ -20,13 +20,14 @@ To see all issues & pull requests closed by this release see the [Git closed mil
   * To not break user's code the optional parameters related to the TSP Annaeling are ignored
   * The function with the annaeling optional parameters is deprecated
 
+Making some changees here
 
 
 pgRouting 3.2.0 Release Notes
 -------------------------------------------------------------------------------
 
 To see all issues & pull requests closed by this release see the [Git closed milestone for 3.2.0](https://github.com/pgRouting/pgrouting/issues?utf8=%E2%9C%93&q=milestone%3A%22Release%203.2.0%22) on Github.
-
+Also making some changes here
 **Build**
 
 * [#1850](https://github.com/pgRouting/pgrouting/issues/1850): Change Boost min version to 1.56
