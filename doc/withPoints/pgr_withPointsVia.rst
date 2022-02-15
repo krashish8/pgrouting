@@ -11,39 +11,47 @@
 
 * **Supported versions:**
   `Latest <https://docs.pgrouting.org/latest/en/pgr_withPointsVia.html>`__
-  (`3.3 <https://docs.pgrouting.org/3.3/en/pgr_withPointsVia.html>`__)
-  `3.2 <https://docs.pgrouting.org/3.2/en/pgr_withPointsVia.html>`__
-  `3.1 <https://docs.pgrouting.org/3.1/en/pgr_withPointsVia.html>`__
-  `3.0 <https://docs.pgrouting.org/3.0/en/pgr_withPointsVia.html>`__
+  (`3.4 <https://docs.pgrouting.org/3.4/en/pgr_withPointsVia.html>`__)
 
-pgr_withPointsVia - Proposed
+``pgr_withPointsVia`` - Proposed
 ===============================================================================
 
-``pgr_withPointsVia`` - Get a path using the vertices/points indicated
+``pgr_withPointsVia`` Via points/vertices routing.
 
 .. include:: proposed.rst
-   :start-after: begin-warning
-   :end-before: end-warning
+   :start-after: stable-begin-warning
+   :end-before: stable-end-warning
 
 .. figure:: images/boost-inside.jpeg
    :target: https://www.boost.org/libs/graph/doc/table_of_contents.html
 
    Boost Graph Inside
 
-.. rubric:: Availability:
+.. rubric:: Availability
 
-* Version 3.0.0
+* Version 3.4.0
 
-  * New **proposed** function
+  * New **proposed** function ``pgr_withPointsVia`` (`One Via`_)
 
 
 Description
 -------------------------------------------------------------------------------
 
-Modify the graph to include points and
-using Dijkstra algorithm, extracts all the nodes and points that have costs less
-than or equal to the value ``distance`` from the starting point.
-The edges extracted will conform the corresponding spanning tree.
+Given a list of vertices and a graph, this function is equivalent to finding the
+shortest path between :math:`vertex_i` and :math:`vertex_{i+1}` for all :math:`i
+< size\_of(via\;vertices)` trying not to use restricted paths.
+
+The paths represents the sections of the route.
+
+The general algorithm is as follows:
+
+* Execute a :doc:`pgr_dijkstraVia`.
+* For the set of sub paths of the solution that pass through a restriction then
+
+  * Execute the :doc:`pgr_withPoints` algorithm with restrictions for the sub
+    paths.
+  * **NOTE** when this is done, ``U_turn_on_edge`` flag is ignored.
+
 
 Signatures
 -------------------------------------------------------------------------------
@@ -51,128 +59,112 @@ Signatures
 .. rubric:: Summary
 
 .. index::
-    single: withPointsVia - Proposed on v2.2
+    single: withPointsVia - Proposed on v3.4
 
-.. code-block:: none
+.. parsed-literal::
 
-	withPointsVia(edges_sql, points_sql, start_pid, distance [, directed] [, driving_side] [, details])
-  RETURNS SET OF (seq, node, edge, cost, agg_cost)
+    pgr_withPointsVia(`Edges SQL`_, `Points SQL`_, **via vertices** [, directed] [, strict] [, U_turn_on_edge])
+    RETURNS SET OF (seq, path_pid, path_seq, start_vid, end_vid, node, edge, cost, agg_cost, route_agg_cost)
+    OR EMPTY SET
 
-.. rubric:: Using defaults
-...................................................
-
-.. code-block:: none
-
-	withPointsVia(edges_sql, points_sql, start_pid, distance)
-    RETURNS SET OF (seq, node, edge, cost, agg_cost)
-
-:Example: * **TBD**
-
-- For a **directed** graph.
-- The driving side is set as **b** both. So arriving/departing to/from the point(s) can be in any direction.
-- No **details** are given about distance of other points of the query.
-
-.. literalinclude:: doc-pgr_withPointsVia.queries
-   :start-after: --q1
-   :end-before: --q2
-
-.. index::
-	single: withPointsVia(edges_sql, points_sql, start_pid, distance, directed, driving_side, details) -- proposed
-
-Driving distance from a single point
+One Via
 ...............................................................................
 
-Finds the driving distance depending on the optional parameters setup.
+.. parsed-literal::
 
-.. code-block:: none
+    pgr_withPointsVia(`Edges SQL`_, `Points SQL`_, **via vertices** [, directed] [, strict] [, U_turn_on_edge])
+    RETURNS SET OF (seq, path_pid, path_seq, start_vid, end_vid, node, edge, cost, agg_cost, route_agg_cost)
+    OR EMPTY SET
 
-	pgr_withPointsVia(edges_sql, points_sql, start_pid, distance,
-        directed := true, driving_side := 'b', details := false)
-    RETURNS SET OF (seq, node, edge, cost, agg_cost)
+:Example: Find the route that visits the vertices :math:`\{ -1, -3, 9\}` in that
+          order on an **undirected** graph.
 
-:Example: Right side driving topology
+.. literalinclude:: withPointsVia.queries
+    :start-after: -- q0
+    :end-before: -- q1
 
-.. literalinclude:: doc-pgr_withPointsVia.queries
-   :start-after: --q2
-   :end-before: --q3
+Parameters
+-------------------------------------------------------------------------------
+
+.. include:: pgRouting-concepts.rst
+    :start-after: withPointsVia_parameters_start
+    :end-before: withPointsVia_parameters_end
 
 Inner query
 -------------------------------------------------------------------------------
-..
-    description of the sql queries
+
+Edges SQL
+...............................................................................
 
 .. include:: pgRouting-concepts.rst
     :start-after: basic_edges_sql_start
     :end-before: basic_edges_sql_end
 
+Points SQL
+...............................................................................
+
 .. include:: pgRouting-concepts.rst
     :start-after: points_sql_start
     :end-before: points_sql_end
 
-Parameters
-...............................................................................
+Return Columns
+-------------------------------------------------------------------------------
 
-================ ================= =================================================
-Parameter        Type              Description
-================ ================= =================================================
-**edges_sql**    ``TEXT``          Edges SQL query as described above.
-**points_sql**   ``TEXT``          Points SQL query as described above.
-**start_pid**    ``ANY-INTEGER``   Starting point id.
-**distance**     ``ANY_NUMERICAL`` Distance from the start_pid
-**directed**     ``BOOLEAN``       (optional). When ``false`` the graph is considered as Undirected. Default is ``true`` which considers the graph as Directed.
-**driving_side** ``CHAR``          (optional) Value in ['b', 'r', 'l', NULL] indicating if the driving side is:
-                                     - In the right or left or
-                                     - If it doesn't matter with 'b' or NULL.
-                                     - If column not present 'b' is considered.
+.. include:: pgr_dijkstraVia.rst
+   :start-after: via result columns start
+   :end-before: via result columns end
 
-**details**      ``BOOLEAN``       (optional). When ``true`` the results will include the driving distance to the points with in Distance.
-                                   Default is ``false`` which ignores other points of the points_sql.
-================ ================= =================================================
-
-Result Columns
-...................................................
-
-============ =========== =================================================
-Column           Type              Description
-============ =========== =================================================
-**seq**      ``INT``     row sequence.
-**node**     ``BIGINT``  Identifier of the node within the Distance from ``start_pid``. If ``details =: true`` a negative value is the identifier of a point.
-**edge**     ``BIGINT``  Identifier of the edge used to go from ``node`` to the next node in the path sequence.
-                           - ``-1`` for the last row in the path sequence.
-
-**cost**     ``FLOAT``   Cost to traverse from ``node`` using ``edge`` to the next ``node`` in the path sequence.
-                           - ``0`` for the last row in the path sequence.
-
-**agg_cost** ``FLOAT``   Aggregate cost from ``start_pid`` to ``node``.
-                           - ``0`` for the first row in the path sequence.
-
-============ =========== =================================================
+.. Note:: When ``start_vid`` or ``end_vid`` is negative, then it is a point.
 
 Additional Examples
 -------------------------------------------------------------------------------
 
-- For queries marked as ``directed`` with ``cost`` and ``reverse_cost`` columns
-- The examples in this section use the following :ref:`fig1`
+:Example 1: Find the route that visits the vertices :math:`\{-1, 5, -3, 9, 4\}`
+            in that order on a **directed** graph
 
-:Example: Left side driving topology
+.. literalinclude:: withPointsVia.queries
+    :start-after: -- q1
+    :end-before: -- q2
 
-.. literalinclude:: doc-pgr_withPointsVia.queries
-   :start-after: --q3
-   :end-before: --q4
+:Example 2: What's the aggregate cost of the third path?
 
-:Example: Does not matter driving side.
+.. literalinclude:: withPointsVia.queries
+    :start-after: -- q2
+    :end-before: -- q3
 
-.. literalinclude:: doc-pgr_withPointsVia.queries
-   :start-after: --q4
-   :end-before: --q5
+:Example 3: What's the route's aggregate cost of the route at the end of the
+            third path?
+
+.. literalinclude:: withPointsVia.queries
+    :start-after: -- q3
+    :end-before: -- q4
+
+:Example 4: How are the nodes visited in the route?
+
+.. literalinclude:: withPointsVia.queries
+    :start-after: -- q4
+    :end-before: -- q5
+
+:Example 5: What are the aggregate costs of the route when the visited vertices
+            are reached?
+
+.. literalinclude:: withPointsVia.queries
+    :start-after: -- q5
+    :end-before: -- q6
+
+:Example 6: Show a status of "passes in front" or "visits" of the nodes and
+            points.
+
+.. literalinclude:: withPointsVia.queries
+    :start-after: -- q6
+    :end-before: -- q7
 
 See Also
 -------------------------------------------------------------------------------
 
-* :doc:`pgr_drivingDistance` - Driving distance using dijkstra.
-* :doc:`pgr_alphaShape` - Alpha shape computation.
-* :doc:`pgr_pointsAsPolygon` - Polygon around set of points.
-* The queries use the :doc:`sampledata` network.
+* :doc:`pgr_dijkstraVia`
+* :doc:`pgr_trspVia`
+* :doc:`sampledata` network.
 
 .. rubric:: Indices and tables
 

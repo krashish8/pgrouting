@@ -95,11 +95,6 @@ locale_dirs = ['@CMAKE_SOURCE_DIR@/locale/']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = [
-    'doc/build',
-    'pgr_withPointsVia.rst',
-    'maxFlowApplications.rst',
-    '*/notUsed',
-    'tools/template'
     ]
 
 #    'src/pickDeliver/doc/pgr_withPointsVia.rst',

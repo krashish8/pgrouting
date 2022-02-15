@@ -63,7 +63,7 @@ Signatures
 .. code-block:: none
 
     pgr_dijkstraVia(edges_sql, via_vertices [, directed] [, strict] [, U_turn_on_edge])
-    RETURNS SET OF (seq, path_pid, path_seq, start_vid, end_vid,
+    RETURNS SET OF (seq, path_id, path_seq, start_vid, end_vid,
         node, edge, cost, agg_cost, route_agg_cost)
     OR EMPTY SET
 
@@ -88,7 +88,7 @@ One Via
 .. code-block:: none
 
     pgr_dijkstraVia(edges_sql, via_vertices [, directed] [, strict] [, U_turn_on_edge])
-    RETURNS SET OF (seq, path_pid, path_seq, start_vid, end_vid,
+    RETURNS SET OF (seq, path_id, path_seq, start_vid, end_vid,
         node, edge, cost, agg_cost, route_agg_cost)
     OR EMPTY SET
 
@@ -126,7 +126,7 @@ Returns set of ``(seq, path_pid, path_seq, start_vid, end_vid, node, edge, cost,
 Column             Type          Description
 ================== ============= =================================================
 ``seq``            ``BIGINT``    Sequential value starting from 1.
-``path_pid``       ``BIGINT``    Identifier of the path.
+``path_id``        ``BIGINT``    Identifier of the path.
 ``path_seq``       ``BIGINT``    Sequential value starting from 1 for the path.
 ``start_vid``      ``BIGINT``    Identifier of the starting vertex of the path.
 ``end_vid``        ``BIGINT``    Identifier of the ending vertex of the path.

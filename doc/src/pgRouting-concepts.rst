@@ -504,10 +504,12 @@ Points SQL
    * - ``pid``
      - **ANY-INTEGER**
      - **value**
-     - (optional) Identifier of the point.
+     - Identifier of the point.
 
-       * If column present, it can not be NULL.
-       * If column not present, a sequential negative **value** will be given
+       * Use with positive value, as internally will be converted to negative
+         value
+       * If column is present, it can not be NULL.
+       * If column is not present, a sequential negative **value** will be given
          automatically.
    * - ``edge_id``
      - **ANY-INTEGER**
@@ -584,6 +586,69 @@ Parameters
 
 
 .. pgr_dijkstra_via_parameters_end
+
+.. rubric:: Parameters for the Via functions:
+
+* :doc:`pgr_withPointsVia`
+
+.. withPointsVia_parameters_start
+
+.. list-table::
+   :width: 81
+   :widths: 14 20 7 40
+   :header-rows: 1
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - `Edges SQL`_
+     - ``TEXT``
+     -
+     - SQL query as described.
+   * - `Points SQL`_
+     - ``TEXT``
+     -
+     - SQL query as described.
+   * - **via vertices**
+     - ``ARRAY[`` **ANY-INTEGER** ``]``
+     -
+     - Array of ordered vertices identifiers that are going to be visited.
+   * - ``directed``
+     - ``BOOLEAN``
+     - ``true``
+     - - When ``true`` Graph is considered `Directed`
+       - When ``false`` the graph is considered as Undirected.
+   * - ``driving_side``
+     - ``CHAR``
+     - ``b``
+     - Value in [``b``, ``r``, ``l``, ``NULL``] indicating if the driving side is:
+
+       - ``r`` for right driving side
+       - ``l`` for left driving side
+       - ``b`` for both, or ignore driving side
+   * - ``details``
+     - ``BOOLEAN``
+     - ``false``
+     - - When ``true`` the results will include the points that are in the path.
+       - When ``false`` the results will not include the points that are in the path.
+   * - ``strict``
+     - ``BOOLEAN``
+     - ``false``
+     - * When ``true`` if a path is missing stops and returns **EMPTY SET**
+       * When ``false`` ignores missing paths returning all paths found
+   * - ``U_turn_on_edge``
+     - ``BOOLEAN``
+     - ``true``
+     - * When ``true`` departing from a visited vertex will not try to avoid
+         using the edge used to reach it.  In other words, U turn using the edge
+         with same identifier is allowed.
+       * When ``false`` when a departing from a visited vertex tries to avoid
+         using the edge used to reach it.  In other words, U turn using the edge
+         with same identifier is used when no other path is found.
+
+
+.. withPointsVia_parameters_end
 
 |
 
