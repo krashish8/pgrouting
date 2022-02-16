@@ -34,14 +34,14 @@ CREATE FUNCTION pgr_withPointsVia(
   ANYARRAY, -- via vids
 
   directed BOOLEAN DEFAULT true,
-  -- withPoints parameters
-
-  driving_side CHAR DEFAULT 'b', -- 'r'/'l'/'b'/NULL
-  details BOOLEAN DEFAULT false,
 
   -- via parameters
   strict BOOLEAN DEFAULT false,
   U_turn_on_edge BOOLEAN DEFAULT true,
+
+  -- withPoints parameters
+  driving_side CHAR DEFAULT 'b', -- 'r'/'l'/'b'/NULL
+  details BOOLEAN DEFAULT false,
 
   OUT seq INTEGER,
   OUT path_id INTEGER,
@@ -62,7 +62,7 @@ LANGUAGE SQL VOLATILE STRICT
 COST 100
 ROWS 1000;
 
-COMMENT ON FUNCTION pgr_withPointsVia(TEXT, TEXT, ANYARRAY, BOOLEAN, CHAR, BOOLEAN, BOOLEAN, BOOLEAN)
+COMMENT ON FUNCTION pgr_withPointsVia(TEXT, TEXT, ANYARRAY, BOOLEAN, BOOLEAN, BOOLEAN, CHAR, BOOLEAN)
 IS 'pgr_withPointsVia
 - PROPOSED
 - Parameters:
@@ -71,10 +71,10 @@ IS 'pgr_withPointsVia
   - ARRAY[via vertices identifiers]
 - Optional Parameters
   - directed := true
-  - driving_side := ''b''
-  - details := ''false''
   - strict := false
   - U_turn_on_edge := true
+  - driving_side := ''b''
+  - details := ''false''
 - Documentation:
   - ${PROJECT_DOC_LINK}/pgr_withPointsVia.html
 ';

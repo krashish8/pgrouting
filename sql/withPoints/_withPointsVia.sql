@@ -28,10 +28,10 @@ CREATE FUNCTION _pgr_withPointsVia(
   TEXT,     -- points_sql
   ANYARRAY, -- via vids
   BOOLEAN,  -- directed
-  CHAR,     -- driving_side
-  BOOLEAN,  -- details
   BOOLEAN,  -- strict
   BOOLEAN,  -- U_turn_on_edge
+  CHAR,     -- driving_side
+  BOOLEAN,  -- details
 
   OUT seq INTEGER,
   OUT path_id INTEGER,
@@ -47,5 +47,5 @@ RETURNS SETOF RECORD AS
 'MODULE_PATHNAME'
 LANGUAGE c VOLATILE STRICT;
 
-COMMENT ON FUNCTION _pgr_withPointsVia(TEXT, TEXT, ANYARRAY, BOOLEAN, CHAR, BOOLEAN, BOOLEAN, BOOLEAN)
+COMMENT ON FUNCTION _pgr_withPointsVia(TEXT, TEXT, ANYARRAY, BOOLEAN, BOOLEAN, BOOLEAN, CHAR, BOOLEAN)
 IS 'pgRouting internal function';

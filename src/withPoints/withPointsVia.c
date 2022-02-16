@@ -45,10 +45,10 @@ process(
         char* points_sql,
         ArrayType *viasArr,
         bool directed,
-        char *driving_side,
-        bool details,
         bool strict,
         bool U_turn_on_edge,
+        char *driving_side,
+        bool details,
         Routes_t **result_tuples,
         size_t *result_count) {
     pgr_SPI_connect();
@@ -157,10 +157,10 @@ _pgr_withpointsvia(PG_FUNCTION_ARGS) {
                 PG_GETARG_ARRAYTYPE_P(2),
                 PG_GETARG_BOOL(3),
 
-                text_to_cstring(PG_GETARG_TEXT_P(4)),
+                PG_GETARG_BOOL(4),
                 PG_GETARG_BOOL(5),
 
-                PG_GETARG_BOOL(6),
+                text_to_cstring(PG_GETARG_TEXT_P(6)),
                 PG_GETARG_BOOL(7),
 
                 &result_tuples,
