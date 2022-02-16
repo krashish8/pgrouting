@@ -63,8 +63,9 @@ Signatures
 
 .. parsed-literal::
 
-    pgr_withPointsVia(`Edges SQL`_, `Points SQL`_, **via vertices** [, directed] [, strict] [, U_turn_on_edge])
-    RETURNS SET OF (seq, path_pid, path_seq, start_vid, end_vid, node, edge, cost, agg_cost, route_agg_cost)
+    pgr_withPointsVia(`Edges SQL`_, `Points SQL`_, **via vertices**
+      [, directed] [, strict] [, U_turn_on_edge] [, driving_side] [, details])
+    RETURNS SET OF (``seq, path_pid, path_seq, start_vid, end_vid, node, edge, cost, agg_cost, route_agg_cost``)
     OR EMPTY SET
 
 One Via
@@ -72,8 +73,9 @@ One Via
 
 .. parsed-literal::
 
-    pgr_withPointsVia(`Edges SQL`_, `Points SQL`_, **via vertices** [, directed] [, strict] [, U_turn_on_edge])
-    RETURNS SET OF (seq, path_pid, path_seq, start_vid, end_vid, node, edge, cost, agg_cost, route_agg_cost)
+    pgr_withPointsVia(`Edges SQL`_, `Points SQL`_, **via vertices**
+      [, directed] [, strict] [, U_turn_on_edge] [, driving_side] [, details])
+    RETURNS SET OF (``seq, path_pid, path_seq, start_vid, end_vid, node, edge, cost, agg_cost, route_agg_cost``)
     OR EMPTY SET
 
 :Example: Find the route that visits the vertices :math:`\{ -1, -3, 9\}` in that
