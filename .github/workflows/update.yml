@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo service postgresql start
           pgver=$(psql --version | grep -Po '(?<=psql \(PostgreSQL\) )[^;]+(?=\.\d \()')
-          echo "PGVER=${pgver}" >> $GITHUB_ENV
+          echo "PGVER=13" >> $GITHUB_ENV
           echo "PGIS=3" >> $GITHUB_ENV
           PG_USER=$(whoami)
           echo "PG_RUNNER_USER=${PG_USER}" >> $GITHUB_ENV
